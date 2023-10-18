@@ -6,7 +6,7 @@ import { getInitialData, showFormattedDate } from "../utils";
 
 export default function AddCatatan() {
     const [notes, setNote]  = useState(getInitialData());
-    const tanggal = showFormattedDate(2011, 0, 1, 0, 0, 0, 0)
+    
     
     function handleSubmitNote (note) {
         setNote([...notes, note ]);
@@ -20,7 +20,7 @@ export default function AddCatatan() {
     <div >
       <Header />
       <InputNote onAddNote={handleSubmitNote} />
-      <Body notes={notes} tanggal={tanggal} onRemoveNote={handleRemove} />
+      <Body notes={notes} onRemoveNote={handleRemove} />
     </div>
   );
 }
@@ -34,7 +34,7 @@ function Header() {
   );
 }
 
-function InputNote({ onAddNote, tanggal, createdAt  }) {
+function InputNote({ onAddNote, createdAt}) {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     
@@ -47,7 +47,7 @@ function InputNote({ onAddNote, tanggal, createdAt  }) {
         const newNote = {
             id: Date.now(),
             title, 
-            createdAt: showFormattedDate(2011, 0, 1, 0, 0, 0, 0),
+            createdAt: showFormattedDate(createdAt),
             archived: false,
             body,
     }
@@ -72,7 +72,7 @@ function InputNote({ onAddNote, tanggal, createdAt  }) {
   );
 }
 
-function Body({notes, onRemoveNote, tanggal}) {
+function Body({notes, onRemoveNote, }) {
   return (
     <div className="note-app__body">
       <div className="note">
@@ -80,7 +80,7 @@ function Body({notes, onRemoveNote, tanggal}) {
       </div>
       <div className="notes-list">
         {notes.map((note) => (
-           <Note note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} tanggal={tanggal}/>
+           <Note note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} />
                       
          ))} 
          
@@ -90,11 +90,11 @@ function Body({notes, onRemoveNote, tanggal}) {
   );
 }
 
-function Note({note, onRemoveNote, tanggal, body, createdAt}) {
+function Note({note, onRemoveNote,  body, createdAt}) {
     return (
         <div className=" note-item note-item__content" key={note.id}>
                 <h2 className="note-input__title">{note.title}</h2>
-                <p className="note-item__date">{createdAt}</p>
+                <p className="note-item__date">{showFormattedDate(createdAt)}</p>
                 <p className="note-item__body">{body}</p>
                 <div className="note-item__action">
                 <button className="note-item__delete-button" onClick={() => onRemoveNote(note.id)}>hapus</button>
