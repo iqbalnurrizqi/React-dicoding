@@ -131,7 +131,7 @@ input::placeholder, textarea::placeholder {
 
 .note-item__body {
   font-size: 14px;
-  
+  height: 200px;
 }
 
 .note-item__action {

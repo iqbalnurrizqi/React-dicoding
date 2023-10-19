@@ -7,7 +7,6 @@ import { getInitialData, showFormattedDate } from "../utils";
 export default function AddCatatan() {
     const [notes, setNote]  = useState(getInitialData());
     
-    
     function handleSubmitNote (note) {
         setNote([...notes, note ]);
     }
@@ -16,11 +15,15 @@ export default function AddCatatan() {
         setNote(notes.filter((note) => note.id !== id))
     }
 
+    function handleMove (id) {
+        setNote(notes.map((note) => note.id === id ? {...note, archived: !note.archived} : note))
+    }
+
   return (
     <div >
       <Header />
       <InputNote onAddNote={handleSubmitNote} />
-      <Body notes={notes} onRemoveNote={handleRemove} />
+      <Body notes={notes} onRemoveNote={handleRemove} onMoveNote={handleMove}/>
     </div>
   );
 }
@@ -34,7 +37,7 @@ function Header() {
   );
 }
 
-function InputNote({ onAddNote, createdAt}) {
+function InputNote({ onAddNote}) {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     
@@ -47,7 +50,7 @@ function InputNote({ onAddNote, createdAt}) {
         const newNote = {
             id: Date.now(),
             title, 
-            createdAt: showFormattedDate(createdAt),
+            createdAt:new Date(),
             archived: false,
             body,
     }
@@ -64,7 +67,7 @@ function InputNote({ onAddNote, createdAt}) {
       <form className="note-app__body note-input" onSubmit={handleSubmitNote}>
         <h2 className="note-app__title">isi catatan</h2>
         <input type="text" placeholder="title" value={title} onChange={(e) => setTitle(e.target.value)}/>
-        <textarea name="" id="" cols="30" rows="10" placeholder="body" value={body} onChange={(e) => setBody(e.target.value)}>
+        <textarea name="" id="" cols="30" rows="10" placeholder="body" value={body} onChange={(e) => setBody(e.target.value)} >
         </textarea>
         <button>tombol</button>
       </form>
@@ -72,7 +75,7 @@ function InputNote({ onAddNote, createdAt}) {
   );
 }
 
-function Body({notes, onRemoveNote, }) {
+function Body({notes, onRemoveNote, onMoveNote }) {
   return (
     <div className="note-app__body">
       <div className="note">
@@ -80,27 +83,48 @@ function Body({notes, onRemoveNote, }) {
       </div>
       <div className="notes-list">
         {notes.map((note) => (
-           <Note note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} />
-                      
+           <Note note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} onMoveNote={onMoveNote}/>          
          ))} 
          
       </div>
-          
+          <div>
+            <h1>Arship Catatan</h1>
+          </div>
+            <div className="notes-list">
+                {notes.filter((note) => note.archived).map((note) => (                   
+                <NoteArchive note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} onMoveNote={onMoveNote}/>                    
+                ))}
+                </div>
     </div>
   );
 }
 
-function Note({note, onRemoveNote,  body, createdAt}) {
+function Note({note, onRemoveNote,  body, createdAt, onMoveNote}) {
     return (
         <div className=" note-item note-item__content" key={note.id}>
-                <h2 className="note-input__title">{note.title}</h2>
+                <h2 className="note-item__title">{note.title}</h2>
                 <p className="note-item__date">{showFormattedDate(createdAt)}</p>
                 <p className="note-item__body">{body}</p>
                 <div className="note-item__action">
                 <button className="note-item__delete-button" onClick={() => onRemoveNote(note.id)}>hapus</button>
-                <button className="note-item__archive-button">archived</button>
+                <button className="note-item__archive-button" onClick={() => onMoveNote(note.id)}>archived</button>
                 </div>
-        </div>
+
+       </div>
+    )
+}
+function NoteArchive({note, onRemoveNote,  body, createdAt, onMoveNote}) {
+    return (
+        <div className=" note-item note-item__content" key={note.id}>
+                <h2 className="note-item__title">{note.title}</h2>
+                <p className="note-item__date">{showFormattedDate(createdAt)}</p>
+                <p className="note-item__body">{body}</p>
+                <div className="note-item__action">
+                <button className="note-item__delete-button" onClick={() => onRemoveNote(note.id)}>hapus</button>
+                <button className="note-item__archive-button" onClick={() => onMoveNote(note.id)}>kembali</button>
+                </div>
+
+       </div>
     )
 }
 
