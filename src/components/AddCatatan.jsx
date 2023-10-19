@@ -6,7 +6,7 @@ import { getInitialData, showFormattedDate } from "../utils";
 
 export default function AddCatatan() {
     const [notes, setNote]  = useState(getInitialData());
-    
+   
     function handleSubmitNote (note) {
         setNote([...notes, note ]);
     }
@@ -19,9 +19,16 @@ export default function AddCatatan() {
         setNote(notes.map((note) => note.id === id ? {...note, archived: !note.archived} : note))
     }
 
+    function handleSearch (search) {
+        preventDefault()
+        setNote(notes.filter((note) => note.title === search ? [...notes] : null));
+      
+    }
+    
+
   return (
     <div >
-      <Header />
+      <Header onSearch={handleSearch} />
       <InputNote onAddNote={handleSubmitNote} />
       <Body notes={notes} onRemoveNote={handleRemove} onMoveNote={handleMove}/>
     </div>
@@ -29,15 +36,29 @@ export default function AddCatatan() {
 }
 
 function Header() {
+    const [search, setSearch] = useState('')
+
+
+    function handleSearch(e) {
+        e.preventDefault()
+        if (!search) return
+    }
+
+    console.log(search);
+    
+
   return (
     <div className="note-app__header">
       <h1>buku catatan</h1>
-      <input type="text" placeholder="search"/>
+    <form className="note-search" onSubmit={handleSearch}>
+      <input type="text" placeholder="Cari catatan" value={search} onChange={(e) => setSearch(e.target.value)} />
+    </form>
     </div>
   );
+  
 }
 
-function InputNote({ onAddNote}) {
+function InputNote({ onAddNote }) {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
     
@@ -57,7 +78,7 @@ function InputNote({ onAddNote}) {
 
     onAddNote(newNote);
     console.log(newNote);
-
+    console.log(body)
     setTitle('');
     setBody('');
     }
@@ -82,19 +103,19 @@ function Body({notes, onRemoveNote, onMoveNote }) {
         <h1>Catatan Aktiv</h1>
       </div>
       <div className="notes-list">
-        {notes.map((note) => (
+        {notes.filter((note) => note.archived === false).map((note) => (
            <Note note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} onMoveNote={onMoveNote}/>          
          ))} 
          
       </div>
-          <div>
+          <div className="note">
             <h1>Arship Catatan</h1>
           </div>
             <div className="notes-list">
                 {notes.filter((note) => note.archived).map((note) => (                   
                 <NoteArchive note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} onMoveNote={onMoveNote}/>                    
                 ))}
-                </div>
+            </div>
     </div>
   );
 }
