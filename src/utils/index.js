@@ -54,3 +54,12 @@ const showFormattedDate = (date) => {
 }
 
 export { getInitialData, showFormattedDate };
+
+
+// {notes.filter(note => !note.archived && search ? note.title.toLowerCase().includes(search.toLowerCase()) : true).map((note) => (
+//   <Note note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} onMoveNote={onMoveNote}/>          
+// ))} 
+
+// {notes.filter((note) => note.archived ).map((note) => (                   
+//   <NoteArchive note={note} key={note.id} id={note.id} {...note} onRemoveNote={onRemoveNote} onMoveNote={onMoveNote}/>                    
+//   ))}
